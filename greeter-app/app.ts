@@ -6,6 +6,7 @@ let todoEle = document.querySelector(".todo") as HTMLUListElement;
 interface Todo {
     id: number;
     text: string;
+    status: boolean;
 }
 
 let Todos: Todo[] = [];
@@ -13,56 +14,76 @@ let Todos: Todo[] = [];
 restoreFromLocal();
 
 function addTask() {
-  todoEle.innerHTML = "";
+    todoEle.innerHTML = "";
 
-  Todos.forEach((item) => {
-    let li = document.createElement("li");
+    // Optional: Sort incomplete first
+    Todos.sort((a, b) => Number(a.status) - Number(b.status));
 
-    let idTag = document.createElement("p");
-    idTag.innerText = `id -- ${item.id}`;
+    Todos.forEach((item) => {
+        let li = document.createElement("li");
 
-    let textTag = document.createElement("p");
-    textTag.innerText = `Todo -- ${item.text}`;
+        let idTag = document.createElement("p");
+        idTag.innerText = `ID: ${item.id}`;
 
-    let deleteBtn = document.createElement("button");
-    deleteBtn.innerText = "Delete Todo";
-    deleteBtn.addEventListener("click", () => {
-      deleteTodo(item.id);
+        let textTag = document.createElement("p");
+        textTag.innerText = `Todo: ${item.text}`;
+
+        let deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        deleteBtn.addEventListener("click", () => {
+            deleteTodo(item.id);
+        });
+
+        let editTask = document.createElement("button");
+        editTask.innerText = "Edit";
+        editTask.addEventListener("click", () => {
+            li.innerHTML = "";
+
+            let editInput = document.createElement("input");
+            editInput.value = item.text;
+
+            let saveBtn = document.createElement("button");
+            saveBtn.innerText = "Save";
+
+            saveBtn.addEventListener("click", () => {
+                const newValue = editInput.value.trim();
+                if (newValue !== "") {
+                    item.text = newValue;
+                    saveToLocal();
+                    addTask();
+                }
+            });
+
+            let cancelBtn = document.createElement("button");
+            cancelBtn.innerText = "Cancel";
+            cancelBtn.addEventListener("click", () => {
+                addTask();
+            });
+
+            li.append(idTag, editInput, saveBtn, cancelBtn);
+        });
+
+        let statusBtn = document.createElement("button");
+        updateStatusButton(statusBtn, item.status);
+
+        statusBtn.addEventListener("click", () => {
+            item.status = !item.status;
+            saveToLocal();
+            addTask();
+        });
+
+        li.append(idTag, textTag, deleteBtn, editTask, statusBtn);
+        todoEle.appendChild(li);
     });
+}
 
-    let editTask = document.createElement("button");
-    editTask.innerText = "Edit Task";
-    editTask.addEventListener("click", () => {
-      li.innerHTML = ""; // Clear current content
-
-      let editInput = document.createElement("input");
-      editInput.value = item.text;
-
-      let saveBtn = document.createElement("button");
-      saveBtn.innerText = "Save Task";
-
-      saveBtn.addEventListener("click", () => {
-        const newValue = editInput.value.trim();
-        if (newValue !== "") {
-          // Update value in the Todos array
-          item.text = newValue;
-          saveToLocal();  // Save to localStorage
-          addTask();      // Re-render UI
-        }
-      });
-
-      let cancelBtn = document.createElement("button");
-      cancelBtn.innerText = "Cancel";
-      cancelBtn.addEventListener("click", () => {
-        addTask(); // Just re-render to cancel editing
-      });
-
-      li.append(idTag, editInput, saveBtn, cancelBtn);
-    });
-
-    li.append(idTag, textTag, deleteBtn, editTask);
-    todoEle.appendChild(li);
-  });
+function updateStatusButton(button: HTMLButtonElement, status: boolean) {
+    button.innerText = `Status: ${status ? "Complete" : "Not Complete"}`;
+    button.style.backgroundColor = status ? "lightgreen" : "lightcoral";
+    button.style.border = "none";
+    button.style.padding = "4px 8px";
+    button.style.marginLeft = "10px";
+    button.style.cursor = "pointer";
 }
 
 fromEle.addEventListener("submit", (e) => {
@@ -71,9 +92,10 @@ fromEle.addEventListener("submit", (e) => {
     const todoText = inputEl.value.trim();
     if (todoText === "") return;
 
-    let todo: Todo = {
+    const todo: Todo = {
         id: Date.now(),
-        text: todoText
+        text: todoText,
+        status: false
     };
 
     Todos.push(todo);
@@ -95,9 +117,7 @@ function saveToLocal() {
 function restoreFromLocal() {
     const data = localStorage.getItem("todos");
     if (data) {
-        Todos = JSON.parse(data);
-        addTask(); // <-- Make sure this is called with parentheses
+        Todos = JSON.parse(data) as Todo[];
     }
+    addTask();
 }
-
-
