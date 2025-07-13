@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI</title>
+</head>
+<body>
+  <div class="container">
+    <form>
+      <input type="number" placeholder="Enter the weight (kg)" id="input-weight" required>
+      <input type="number" placeholder="Enter the height (cm)" id="input-height" required>
+      <button type="submit">Calculate BMI</button>
+    </form>
+  </div>
+
+  <script>
+    document.querySelector("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleFormData();
+    });
+
+    function handleFormData() {
+      let weight = parseFloat(document.querySelector("#input-weight").value);
+      let heightCm = parseFloat(document.querySelector("#input-height").value);
+      let height = heightCm / 100; // Convert cm to meters
+
+      let container = document.querySelector(".container");
+      let result = document.querySelector(".bmi-result");
+      if (result) result.remove(); // remove previous result
+
+      let BMI = weight / (height * height);
+      let h2 = document.createElement("h2");
+      h2.className = "bmi-result";
+      h2.innerText = `Your BMI is ${BMI.toFixed(2)} - `;
+
+      if (BMI <= 18.4) {
+        h2.innerText += "Underweight";
+      } else if (BMI >= 18.5 && BMI <= 24.9) {
+        h2.innerText += "Normal weight";
+      } else if (BMI >= 25 && BMI <= 29.9) {
+        h2.innerText += "Overweight";
+      } else {
+        h2.innerText += "Obese";
+      }
+
+      container.appendChild(h2);
+    }
+  </script>
+</body>
+</html>
