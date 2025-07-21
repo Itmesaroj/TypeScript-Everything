@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Age Calculator</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="h-screen w-screen flex justify-center items-center">  
+        <div class="shadow-lg w-[35%] h-[300px] flex flex-col items-center p-2 gap-2" id="container">
+            <h1 class="text-4xl font-semibold mb-3">Age Calculator</h1>
+            <h4 class="text-lg mb-2">Enter you date of birth</h4>
+
+            <input type="date" class="w-[70%] h-[40px] bg-slate-100 p-2 rounded-lg mb-3">
+            <button class="w-[80%] h-[40px] rounded-lg bg-purple-700 text-yellow-400" id="btn">Calculate Age</button>
+        </div>
+    </body>
+</html>
+
+<!-- JavaScript Code  -->
+
+
+<script>
+  document.getElementById("btn")?.addEventListener("click", () => {
+    const container = document.getElementById("container");
+    const input = document.querySelector("input");
+
+    if (!input || !input.value) {
+      alert("Please select your date of birth.");
+      return;
+    }
+
+    const birthDate = new Date(input.value);
+    const today = new Date();
+
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Remove previous result if exists
+    const existingResult = document.getElementById("age-result");
+    if (existingResult) existingResult.remove();
+
+    const resultElement = document.createElement("h2");
+    resultElement.id = "age-result";
+    resultElement.className = "text-xl font-semibold text-purple-800 mt-2 text-center";
+    resultElement.innerText = `You are ${years} years, ${months} months, and ${days} days old.`;
+
+    container.appendChild(resultElement);
+  });
+</script>

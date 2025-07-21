@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Tip Calculator</title>
+         <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+
+    <body>
+        <div class="container h-screen w-screen flex justify-center items-center">
+            <div class="w-[600px] h-[400px] shadow-2xl rounded-xl p-3">
+                <div  class="h-[70px] flex justify-center items-center">
+                    <h1 class="text-2xl font-medium">Tip Calculator</h1>
+                </div>
+              <div>
+                <p class="p-3 text-base font-normal">Enter the bill amount and tip percentage to calculate the total.</p>
+              </div>
+
+              <form action="">
+                <label for="bill" class="p-4">Bill amount:</label> <br>
+                <input type="number" placeholder="Enter Bill amount" id="bill" name="bill" class="h-[40px] w-[90%]  pl-3 border-1 border-black rounded-md m-4 bg-gray-100 placeholder:text-red-500">
+
+                <br>
+                <label for="" class="p-4" >Tip percentage:</label>
+                <input type="number" id="tip" class="h-[40px] w-[90%]  pl-3 border-1 border-black rounded-md m-4 bg-gray-100 placeholder:text-red-500" placeholder="Enter Tip percentage">
+
+                <button type="submit" class="w-[90%] m-4 h-[40px] rounded-md text-yellow-50 bg-green-400">Calculate</button>
+              </form>
+            </div>
+        </div>
+       
+    </body>
+</html>
+
+
+<script>
+    // JavaScript Version
+    let form=document.querySelector("form").addEventListener("submit",(e)=>{
+        e.preventDefault();
+        calculate()
+    })
+    function calculate(){
+        let input1=document.getElementById("bill");
+        let input2=document.getElementById("tip");
+
+        let result=parseInt(input1.value)*1*parseInt(input2.value)/100;
+        console.log(result)
+        input1.value="";
+        input2.value="";
+    }
+
+
+    // TypeScript Version
+
+// document.querySelector("form")?.addEventListener("submit", (e: Event) => {
+//     e.preventDefault();
+//     calculate();
+// });
+
+// function calculate(): void {
+//     const input1 = document.getElementById("bill") as HTMLInputElement;
+//     const input2 = document.getElementById("tip") as HTMLInputElement;
+
+//     const bill = parseFloat(input1.value);
+//     const tip = parseFloat(input2.value);
+
+//     if (!isNaN(bill) && !isNaN(tip)) {
+//         const result: number = (bill * tip) / 100;
+//         console.log(result);
+//     } else {
+//         console.error("Please enter valid numbers.");
+//     }
+
+//     input1.value = "";
+//     input2.value = "";
+// }
+
+</script>
+
