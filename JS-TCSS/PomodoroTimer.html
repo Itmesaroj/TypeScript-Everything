@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Pomodoro Timer</title>
+</head>
+<body>
+  <div style="text-align:center; margin-top:100px;">
+    <p id="result" style="font-size: 48px;">25:00</p>
+    <div id="button-Container">
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+      <button id="restart">Restart</button>
+    </div>
+  </div>
+
+  <script>
+    let mintues = 25;
+    let second = 0;
+    let id = null;
+    let isRunning = false;
+
+    const result = document.getElementById("result");
+
+    function updateDisplay() {
+      result.innerHTML = `${String(mintues).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+    }
+
+    function startF() {
+      if (isRunning) return;
+      isRunning = true;
+
+      function tick() {
+        if (mintues === 0 && second === 0) {
+          clearTimeout(id);
+          isRunning = false;
+          alert("Time's up!");
+          return;
+        }
+
+        if (second === 0) {
+          mintues -= 1;
+          second = 59;
+        } else {
+          second -= 1;
+        }
+
+        updateDisplay();
+        id = setTimeout(tick, 1000);
+      }
+
+      tick();
+    }
+
+    document.getElementById("start").addEventListener("click", startF);
+
+    document.getElementById("stop").addEventListener("click", () => {
+      clearTimeout(id);
+      isRunning = false;
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      clearTimeout(id);
+      mintues = 25;
+      second = 0;
+      isRunning = false;
+      updateDisplay();
+    });
+
+    updateDisplay(); // Initial display
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>The RecipeBook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <div class="flex justify-center items-center bg-blue-900 h-[80px] text-4xl text-white font-bold">
+      <h1>Recipe Book App</h1>
+    </div>
+
+    <!-- Container for dynamic recipes -->
+    <div class="w-screen flex flex-col items-center p-4 gap-6" id="container">
+      <!-- Cards will be injected here -->
+    </div>
+
+    <script>
+      const API_KEY = "275d58779ccf4e22af03e792e8819fff";
+
+      async function fetchedData() {
+        try {
+          const res = await fetch(`https://api.spoonacular.com/recipes/random?number=10&apiKey=${API_KEY}`);
+          if (!res.ok) throw new Error("There is Something Error");
+          
+          const data = await res.json();
+          console.log(data);
+          DisplayData(data.recipes); // Use recipes array
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function DisplayData(recipes) {
+        const container = document.getElementById("container");
+        container.innerHTML = "";
+
+        recipes.forEach((recipe) => {
+          const card = document.createElement("div");
+          card.className = "shadow-2xl flex flex-col md:flex-row w-full md:w-[90%] md:h-[200px] bg-white rounded-lg overflow-hidden";
+
+          card.innerHTML = `
+            <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-[200px] md:w-[300px] md:h-full object-cover" />
+            <div class="flex flex-col justify-between p-4 gap-2">
+              <h2 class="text-black font-bold text-xl">${recipe.title}</h2>
+              <p class="text-gray-600 text-sm">
+                ${recipe.summary.replace(/<[^>]*>?/gm, "").slice(0, 150)}...
+              </p>
+              <a href="${recipe.sourceUrl}" target="_blank">
+                <button class="bg-blue-900 text-white w-full md:w-[150px] py-2 rounded hover:bg-blue-800 transition">
+                  VIEW RECIPE
+                </button>
+              </a>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      }
+
+      fetchedData();
+    </script>
+  </body>
+</html>
